@@ -1,0 +1,54 @@
+{
+    "name": "wainwright/casino-dog",
+    "description": "Casino Dog is a tool to alter outcome of casino games. Tool originating from David G. Wainwright (HollywoodTV) and used by big brand-names like Sportsbet.io, Stake.com, Bitstarz.com, Softswiss.com, Betsson Group and many more.",
+    "keywords": [
+        "wainwright", "casino games", "slotmachines", "pragmatic play", "bitstarz", "betsson", "evolution", "booongo", "playson", "relaxgaming", "1x2gaming", "hacksaw",
+        "stake.com", "bc.game", "betconstruct", "upgaming", "isoftbet", "quickfire", "isoftbet", "the hub", "nyx", "nyxgaming", "nextgen gaming", "rubyplay", "microgaming", "bc.game", "stake.com",
+        "casino framework", "casino dogs", "david g. wainwright", "mondogaming", "hollywoodtv", "softswiss", "casino-dog", "casino api"
+    ],
+    "homepage": "https://gitlab.com/wainwright/casino-dog",
+    "license": "MIT",
+    "repositories": [{
+        "type": "path",
+        "url": "../nova"
+    }],
+    "authors": [{
+        "name": "ryanwest",
+        "email": "ryan.west@online.nl",
+        "role": "Developer"
+    }],
+    "require": {
+        "php": "^8.0|^8.1",
+        "spatie/laravel-collection-macros": "^7.12.0",
+        "guzzlehttp/guzzle": "^7.4.5",
+        "wrenchwright/wainwright_nova_support": "*",
+        "livewire/livewire": "*",
+        "spatie/laravel-package-tools": "^1.13.5",
+        "illuminate/contracts": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wainwright\\CasinoDog\\": "src"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Wainwright\\CasinoDog\\CasinoDogServiceProvider"
+            ],
+            "aliases": {
+                "CasinoDog": "Wainwright\\CasinoDog\\Facades\\CasinoDog"
+            }
+        }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=casino-dog-migrations"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

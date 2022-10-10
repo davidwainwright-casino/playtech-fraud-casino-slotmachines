@@ -1,0 +1,67 @@
+{
+  "name": "wrenchwright/wainwright_nova_support",
+  "description": "A wonderful administration interface for Laravel.",
+  "keywords": [
+    "laravel",
+    "admin"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Taylor Otwell",
+      "email": "taylor@laravel.com"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "brick/money": "^0.5.0|^0.6.0",
+    "illuminate/support": "^8.83.4|^9.3.1",
+    "inertiajs/inertia-laravel": "^0.4.5|^0.5.2|^0.6.0",
+    "laravel/ui": "^3.3|^4.0",
+    "nesbot/carbon": "^2.53.1",
+    "spatie/once": "^1.1|^2.0|^3.0",
+    "symfony/console": "^5.4|^6.0",
+    "symfony/finder": "^5.4|^6.0",
+    "symfony/polyfill-intl-icu": "^1.22.1",
+    "symfony/process": "^5.4|^6.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5.10",
+    "predis/predis": "^1.1.9|^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Laravel\\Nova\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Laravel\\Nova\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.x-dev"
+    },
+    "laravel": {
+      "providers": [
+        "Laravel\\Nova\\NovaCoreServiceProvider"
+      ],
+      "aliases": {
+        "Nova": "Laravel\\Nova\\Nova"
+      }
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/package-versions-deprecated": false
+    },
+    "sort-packages": true
+  },
+  "suggest": {
+    "ext-intl": "Required to format Currency field"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "version": "0.0.1"
+}

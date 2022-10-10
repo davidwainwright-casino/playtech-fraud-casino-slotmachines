@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: selenium-hub
+  name: selenium-hub
+spec:
+  ports:
+    - name: "4442"
+      port: 4442
+      targetPort: 4442
+    - name: "4443"
+      port: 4443
+      targetPort: 4443
+    - name: "4444"
+      port: 4444
+      targetPort: 4444
+  selector:
+    io.kompose.service: selenium-hub
+status:
+  loadBalancer: {}

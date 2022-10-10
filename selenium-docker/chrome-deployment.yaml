@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chrome
+  name: chrome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chrome
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: chrome
+    spec:
+      containers:
+        - env:
+            - name: JAVA_OPTS
+              value: -XX:ActiveProcessorCount=10
+            - name: SE_EVENT_BUS_HOST
+              value: selenium-hub
+            - name: SE_EVENT_BUS_PUBLISH_PORT
+              value: "4442"
+            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+              value: "4443"
+            - name: SE_NODE_MAX_SESSIONS
+              value: "10"
+            - name: SE_NODE_OVERRIDE_MAX_SESSIONS
+              value: "true"
+          image: selenium/node-chrome:4.4.0-20220831
+          name: chrome
+          resources: {}
+      restartPolicy: Always
+status: {}

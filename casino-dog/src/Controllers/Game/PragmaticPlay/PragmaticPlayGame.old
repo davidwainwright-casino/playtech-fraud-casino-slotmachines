@@ -1,0 +1,171 @@
+<?php
+namespace Wainwright\CasinoDog\Controllers\Game\PragmaticPlay;
+
+use Illuminate\Http\Request;
+use Wainwright\CasinoDog\Controllers\Game\SessionsHandler;
+use Wainwright\CasinoDog\Controllers\Game\GameKernel;
+use Wainwright\CasinoDog\Controllers\Game\Bgaming\BgamingMeeps;
+use Wainwright\CasinoDog\Controllers\Game\Bgaming\BgamingMain;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Wainwright\CasinoDog\Facades\ProxyHelperFacade;
+use Wainwright\CasinoDog\Controllers\DataController;
+use Wainwright\CasinoDog\Models\MetaData;
+use Wainwright\CasinoDog\CasinoDog;
+
+class PragmaticPlayGame  extends PragmaticPlayMain
+{
+        public static function extra_game_metadata($gid) {
+        // Add in extra fields that you need for whatever reason on games
+        // Launch the metadata job
+            $games = DataController::getGames();
+            $select_game = $games->where('gid', $gid)->first();
+            if(!$select_game) {
+                return false;
+            }
+            $demo_link = $select_game->demolink;
+            if(!$demo_link) {
+               Log::warning('On extra_game_metadata, processed demo link does not seem to be available, which is needed for pragmatic play game_id transformation. Game ID: '.$gid);
+               return false;
+            }
+            $explode = explode('?', $demo_link);
+
+            parse_str($explode[1], $q_arr);
+
+            if(isset($q_arr['gameSymbol'])) {
+                if($q_arr['gameSymbol'] !== NULL) {
+                $new_game_id = $q_arr['gameSymbol'];
+                $data = [
+                    'key' => $gid,
+                    'type' => 'extra_data_gameslist',
+                    'extended_key' => 'gameSymbol',
+                    'value' => $q_arr['gameSymbol'],
+                    'object_data' => '[]',
+                    'active' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+                $db_action = MetaData::where('key', $gid)->where('type', 'extra_data_gameslist')->first();
+                if($db_action) {
+                    $db_action->update(['value' => $q_arr['gameSymbol'], 'updated_at' => now()]);
+                } else {
+                    MetaData::insert($data);
+                }
+                }
+                $user_agent = '[]';
+                $test_session = self::freshPlaySession($new_game_id, 'test_run', $user_agent);
+                return $data; //success?
+            }
+            return false;
+        }
+
+
+        # Disclaimer: this should be made into a job and/or contract on any type of high load
+        public static function pragmaticplay_gameid_transformer($game_id, $direction)
+        {
+            if($direction === 'explode') {
+                try {
+                    $games = DataController::getGames();
+                    $select_game = $games->where('gid', $game_id)->first();
+                    if(!$select_game) {
+                        Log::warning('Error '.$game_id.' not found in gameslist');
+                        return false;
+                    }
+                    $demolink = $select_game['demolink'];
+
+                    $origin_game_id = CasinoDog::in_between('gameSymbol=', 'u0026', $demolink);
+                    $origin_game_id = CasinoDog::remove_back_slashes($origin_game_id);
+                    Log::debug('Game ID transformed to '.$origin_game_id);
+
+                    return $demolink;
+                } catch (\Exception $exception) {
+                    Log::warning('Errored trying to transform & explode game_id on pragmaticplay_gameid_transformer() function in PragmaticPlayController.'.$exception);
+                    return false;
+                }
+            } elseif($direction === 'concat') {
+                $concat = 'softswiss/'.$game_id;
+                return $concat;
+            }
+            Log::warning('Transform direction not supported, use concat or explode on pragmaticplay_gameid_transformer().');
+            return false;
+        }
+
+        public static function freshPlaySession($game_id, $method, $user_agent) {
+
+            if($method === 'demo_method') {
+                $url = "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=".$game_id."&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&technology=H5&platform=WEB&jurisdiction=99&lobby_url=https%3A%2F%2Fwww.pragmaticplay.com%2Fen%2F&lang=en&cur=USD";
+                Log::debug('Game url request: '.$url);
+                $http_get = Http::retry(2, 4000)->get($url);
+                return $http_get;
+            }
+
+            if($method === 'test_run') {
+                $url = "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=".$game_id."&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&technology=H5&platform=WEB&jurisdiction=99&lobby_url=https%3A%2F%2Fwww.pragmaticplay.com%2Fen%2F&lang=en&cur=USD";
+                CasinoDog::logger('test_run_url: '.$game_id, array('data' => $url));
+                $http_get = Http::retry(2, 4000)->get($url);
+                if($http_get->status() !== 200) {
+                    CasinoDog::logger('test_run_FAILED:'.$game_id, array('message' => 'Status code was not 200', 'data' => json_encode($http_get, JSON_PRETTY_PRINT)));
+                 return false;
+                } else {
+                    CasinoDog::logger('test_run_RESULT:'.$game_id, array('message' => 'Check gamecontent.', 'data' => json_encode($http_get, JSON_PRETTY_PRINT)));
+                return $http_get;
+                }
+
+            }
+            // Add in additional grey methods here, specify the method on the internal session creation when a session is requested, don't split this here
+
+            return 'generateSessionToken() method not supported';
+        }
+
+        public static function tryExistingPlaySession($game_id, $token_original, $user_agent)
+        {
+            // Todo (continued play/bridged sessions) for now returning false so freshplaySession is triggered
+            return false;
+        }
+
+        public static function requestSession($session = NULL)
+        {
+            $proposed_session = $session; // validate this again if you multi-server setup between API & actual session creation jobs
+            $select_session = SessionsHandler::sessionData($proposed_session['token_internal']);
+            if($select_session === false or !$select_session['session_data']) { //internal session not found
+                   return false;
+            }
+
+            $player_id = $select_session['session_data']['player_id'];
+            $token_internal = $select_session['session_data']['token_internal'];
+            $game_id = $select_session['session_data']['game_id_original'];
+            $user_agent = $select_session['session_data']['user_agent'] ?? '[]';
+            $currency = $select_session['session_data']['currency'];
+
+            $check_active_session = SessionsHandler::sessionFindPreviousActive($player_id, $token_internal, $game_id);
+            return json_encode(array('result' => self::extra_game_metadata($game_id)));
+
+            $new_game_id = self::pragmaticplay_gameid_transformer($game_id, 'explode');
+            $url = "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=".$new_game_id."&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&technology=H5&platform=WEB&jurisdiction=99&lobby_url=https%3A%2F%2Fwww.pragmaticplay.com%2Fen%2F&lang=en&cur=USD";
+
+
+
+            if($check_active_session === false) {
+                $retrieve_play_session = self::freshPlaySession($game_id, 'demo_method', $user_agent);
+                if($retrieve_play_session->status() !== 200) {
+                    return false;
+                }
+            } else {
+                $old_token_to_transfer = $check_active_session['token_original'];
+                $retrieve_play_session = self::tryExistingPlaySession($game_id, $old_token_to_transfer, $user_agent);
+                if($retrieve_play_session === false) {
+                    $retrieve_play_session = self::freshPlaySession($game_id, 'demo_method', $user_agent);
+                    if($retrieve_play_session->status() !== 200) {
+                        return false;
+                    }
+                } else {
+                    SessionsHandler::sessionExpired($check_active_session['token_internal']);
+                }
+            }
+
+            $game_content = $retrieve_play_session;
+            return $game_content;
+
+        }
+    }
