@@ -76,6 +76,16 @@
         'launcher_behaviour' => 'internal_game', // 'internal_game' or 'redirect' - expecting url on 'redirect' on SessionsHandler::requestSession()
         'active' => 1, //set to 0 to immediate cease all routes access
       ],
+      'mascot' => [
+        'new_api_endpoint' => env('APP_URL').'/api/games/mascot/',
+        'controller' => \Wainwright\CasinoDog\Controllers\Game\Mascot\MascotMain::class,
+        'extra_game_metadata' => 0,
+        'fake_iframe_url' => 1,
+        'demolink_retrieval_method' => 0, // customize the demo link retrieval used on datacontroller, if set to 1 you will need'demolink_retrieval_method () in your Main class
+        'custom_entry_path' => 0,
+        'launcher_behaviour' => 'internal_game', // 'internal_game' or 'redirect' - expecting url on 'redirect' on SessionsHandler::requestSession()
+        'active' => 1, //set to 0 to immediate cease all routes access
+      ],
       'isoftbet' => [
         'new_api_endpoint' => env('APP_URL').'/api/games/isoftbet/',
         'controller' => \Wainwright\CasinoDog\Controllers\Game\iSoftbet\iSoftbetMain::class,
