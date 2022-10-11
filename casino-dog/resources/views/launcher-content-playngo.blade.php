@@ -8,7 +8,7 @@
     @endphp
 @else 
 
-<base href="https://asccw.playngonetwork.com/Casino">
+<base href="https://asccw.playngonetwork.com/Casino/">
 {!! $game_content['html'] !!}
 
 @endif

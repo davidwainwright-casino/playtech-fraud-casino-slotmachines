@@ -98,13 +98,6 @@ class PragmaticPlayGame extends PragmaticPlayMain
 
         $bridge_init = str_replace('mgckey', 'mgckey='.$bridged_session_token.'&old_mgckey=', $request->getContent()); 
         $bridge_send = $this->curl_cloned_request($internal_token, $bridge_init, $request);
-        if(config('ably.key')) {
-            $ably = new \Wainwright\CasinoDog\Controllers\Game\AblyController;
-            $ably->send_message($request->internal_token, 'bridged_game_request',  '[bridge]'.json_encode($bridge_init));
-            $ably->send_message($request->internal_token, 'bridged_game_init_response',  '[bridge]'.json_encode(json_decode($bridge_send, true)));
-        }
-
-
         $query = $this->build_response_query($query);
 
 

@@ -134,5 +134,6 @@ trait GameKernelTrait
     public function error_exception_message(\Exception $exception) {
         return $exception->getMessage();
     }
+    
 
 }

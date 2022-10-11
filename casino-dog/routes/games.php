@@ -63,6 +63,10 @@ Route::domain(env('APP_HOSTNAME'))->group(function () {
         Route::get('/prelauncher_netent', [NetentMain::class, 'prelauncher_view']); //used to hijack legitimate netent session to use our api
         Route::get('/platipus/{game}/{game_code}/g', [SessionsHandler::class, 'entrySession']); //custom entry, being used in custom_entry_path() function on Platipus. You can toggle custom_entry_path usage in config/casino-dog.php
         Route::get('/Casino/IframedView', [SessionsHandler::class, 'entrySession']); //custom entry, being used in custom_entry_path() function on Playngo. You can toggle custom_entry_path usage in config/casino-dog.php
+        Route::get('/casino/ContainerLauncher', [SessionsHandler::class, 'entrySession']); //custom entry, being used in custom_entry_path() function on Playngo. You can toggle custom_entry_path usage in config/casino-dog.php
+        Route::get('/casino/IframedView', [SessionsHandler::class, 'entrySession']); //custom entry, being used in custom_entry_path() function on Playngo. You can toggle custom_entry_path usage in config/casino-dog.php
+
+    
     });
 });
 

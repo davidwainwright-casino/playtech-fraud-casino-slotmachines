@@ -2,7 +2,7 @@
 
 use \Illuminate\Database\Eloquent\Model as Eloquent; //mysql & mariadb
 #use Jenssegers\Mongodb\Eloquent\Model as Eloquent; //mongodb
-use JeffGreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
+#use JeffGreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 
 class User extends \App\Models\User
 {

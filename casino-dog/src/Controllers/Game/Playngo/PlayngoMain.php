@@ -108,21 +108,28 @@ class PlayngoMain extends GameKernel
                 $token = explode(';', $asset_name);
                 $token = $token[1];
                 $select_session = $this->get_internal_session($token)['data'];
-
-                $http = Http::get('https://wainwrighted.herokuapp.com/https://asccw.playngonetwork.com/Casino/GameLoader?'.$url_query[1]);
+                
+                $new_url = $_SERVER['REQUEST_URI'];
+                $new_url_explode = explode('?', $new_url);
+                $new_url = str_replace(';'.$token, '', $new_url_explode[1]);
+                $http = Http::get('https://wainwrighted.herokuapp.com/https://asccw.playngonetwork.com/Casino/../Casino/GameLoader?'.$new_url);
+                //$http = Http::get('https://wainwrighted.herokuapp.com/https://asccw.playngonetwork.com/Casino/GameLoader?div=pngCasinoGame&pid=2&gid=bookofdead&lang=en_US&practice=1&demo=2&width=100%&height=100%&isbally=False&fullscreenmode=False&rccurrentsessiontime=0&rcintervaltime=0&autoplaylimits=0&autoplayreset=0&channel=desktop&callback=flashCallback&coreWebUrl=https://asccw.playngonetwork.com/&resourcelevel=0&hasJackpots=False&defaultsound=False&showPoweredBy=True');
                 $api_url = $this->in_between('this.configuration.server = "', '"', $http);
                 $new_api_endpoint = config('casino-dog.games.playngo.new_api_endpoint').$token.'/'.$select_session['game_id_original'].'/game_event';
-                $changed_content = str_replace('this.configuration.server = "'.$api_url, 'this.configuration.server = "'.$new_api_endpoint, $http);
+                $changed_content = str_replace('this.configuration.server = "'.$api_url, 'this.configuration.server = "'.$new_api_endpoint.'?original='.$api_url, $http);
                 $changed_content = str_replace('this.configuration.currency = ""', 'this.configuration.currency = "USD"', $changed_content);
-                $changed_content = str_replace($api_url, $new_api_endpoint, $changed_content);
-		//$changed_content = str_replace('//', '', $changed_content);
-		header('application/x-javascript');
+                //$changed_content = str_replace('window.StatsHandler = new StatsHandler("bookofdead", "desktop", "", StatsHandler.Megaton, "en_GB", "1", "1");', '', $changed_content);
+                //$changed_content = str_replace($api_url, $new_api_endpoint, $changed_content);
+		        //$changed_content = str_replace('//</script>', '', $changed_content);
+                //$changed_content = str_replace('//<script>', '', $changed_content);
+
                 echo $changed_content;
             //$http = Http::get('https://fmtcw.playngonetwork.com/Casino/GameLoader?div=pngCasinoGame&pid=594&gid=aztecwarriorprincess&lang=en_US&practice=1&demo=2&isbally=False&fullscreenmode=False&rccurrentsessiontime=0&rcintervaltime=0&autoplaylimits=0&autoplayreset=0&channel=desktop&resourcelevel=0&hasJackpots=False&defaultsound=False&embedmode=iframe&origin=https://www.duxcasino.com&showPoweredBy=True');
             } else {
-                $http = Http::get('https://asccw.playngonetwork.com/Casino/GameLoader');
+                $http = Http::get('https://ascflyp.playngonetwork.com/Casino/GameLoader');
+                return $http;
+
             }
-            return $http;
         }
 
 
@@ -155,7 +162,7 @@ class PlayngoMain extends GameKernel
     */
     public function custom_entry_path($gid)
     {
-        $url = env('APP_URL')."/Casino/IframedView";
+        $url = env('APP_URL')."/casino/ContainerLauncher";
         return $url;
 
     }
@@ -171,7 +178,7 @@ class PlayngoMain extends GameKernel
     {
         //$select_session = $this->get_internal_session($token_internal);
         $gc = $game_content['html'];
-        $gc = str_replace('../Casino/GameLoader', env('APP_URL').'/dynamic_asset/playngo/GameLoader;'.$token_internal, $gc);
+        $gc = str_replace('../Casino/GameLoader', env('APP_URL').'/dynamic_asset/playngo/GameLoader.js;'.$token_internal, $gc);
         return $gc;
     }
 }

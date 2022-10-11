@@ -150,6 +150,8 @@ class PragmaticPlayMain extends GameKernel
         $gc = $game_content;
         $gc = str_replace('"gameService":"https://demogames.pragmaticplay.net/', '"gameService":"'.$new_api_endpoint, $gc);
         $gc = str_replace('"gameService":"https://demogamesfree.pragmaticplay.net/', '"gameService":"'.$new_api_endpoint, $gc);
+        $new_api_reload_balance = str_replace('/01-dev-api.777.dog/', '', $new_api_endpoint);
+        $gc = str_replace('/gs2c/reloadBalance.do', $new_api_reload_balance.'gs2c/reloadBalance.do', $gc);
 
         $gc = str_replace('device.pragmaticplay.net/wurfl.js', 'wainwrighted.herokuapp.com/https://device.pragmaticplay.net/wurfl.js', $gc);
         $gc = str_replace('cashierUrl: ""',  'cashierUrl: "/"', $gc);

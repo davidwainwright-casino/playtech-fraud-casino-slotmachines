@@ -54,6 +54,14 @@ class TestingController
 
     }
 
+
+
+    public function viewer()
+    {
+        return Http::patch('https://rarenew-dk4.pragmaticplay.net/ReplayService');
+
+    }
+    
     public static function send(Request $request) {
 //return \Wainwright\CasinoDog\Events\TestBroadcast::dispatch('5000');
         $url = "https://api-prod.infingame.com/ps-launch/softswiss/bets/prod?gameName=pls_luxor_gold_hold_and_win&key=TEST1000&country=RUS&demo=true&shell=request&language=en&segment=desktop";

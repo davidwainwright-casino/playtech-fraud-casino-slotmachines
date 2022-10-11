@@ -78,13 +78,16 @@ class PlayngoGame extends PlayngoMain
 
     public function game_event(Request $request)
     {
+       
         $token = $request->internal_token;
         $game_id = $request->slug;
         $select_session = $this->get_internal_session($token)['data'];
+
         $api_point = config('casino-dog.games.playngo.new_api_endpoint').$token.'/'.$game_id.'/game_event';
-        $url = str_replace($api_point, 'https://ascflyp.playngonetwork.com', $request->fullUrl());
-        //$url = str_replace($api_point, 'https://fmtflyp.playngonetwork.com', $request->fullUrl());
-        $response = $this->curl_request($url, $request);
+        $full_url = $_SERVER['REQUEST_URI'];
+
+        $original_url = explode('?original=', $full_url);
+        $response = $this->curl_request($original_url[1], $request);
 	//return $response;
         if(str_contains($response, '!')) {
             $user_id_1 = $this->in_between('"', '!', $response);
@@ -126,9 +129,8 @@ class PlayngoGame extends PlayngoMain
         }
 
         $response = str_replace('DEMO', $select_session['currency'], $response);
-
-
-        return $response;
+        $response = str_replace(' ', '', $response);
+        return view('wainwright::playngo-response')->with('response', $response);
     }
 
 
@@ -145,6 +147,9 @@ class PlayngoGame extends PlayngoMain
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 5);
 
         $headers = array(
         "Accept: */*",

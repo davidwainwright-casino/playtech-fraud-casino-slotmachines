@@ -24,6 +24,7 @@ trait InstallNovaPanel
             __DIR__ . '../../../stubs/nova/DataLogger.php' => $stubsPathBaseDir . '/DataLogger.php',
             __DIR__ . '../../../stubs/nova/GameImporterJob.php' => $stubsPathBaseDir . '/GameImporterJob.php',
             __DIR__ . '../../../stubs/nova/Gameslist.php' => $stubsPathBaseDir . '/Gameslist.php',
+            __DIR__ . '../../../stubs/nova/GameRespinTemplates.php' => $stubsPathBaseDir . '/GameRespinTemplates.php',
             __DIR__ . '../../../stubs/nova/GamesThumbnails.php' => $stubsPathBaseDir . '/GamesThumbnails.php',
             __DIR__ . '../../../stubs/nova/ImportedGames.php' => $stubsPathBaseDir . '/ImportedGames.php',
             __DIR__ . '../../../stubs/nova/OperatorAccess.php' => $stubsPathBaseDir . '/OperatorAccess.php',

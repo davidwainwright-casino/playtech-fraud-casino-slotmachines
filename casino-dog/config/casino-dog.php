@@ -34,7 +34,6 @@
        Some providers delivered stock/default will require this setup, it will be noted within the documentation if you can use without use of wildcard session domains.
     */
     'wildcard_session_domain' => [
-      'enabled' => 1,
       'domain' => '.777.dog', // use .DOMAIN.TLD syntax, for example: .777.dog when generating session will become https://d485649e-b239-4dad-ac2e-8ec5a756b504.777.dog
     ],
 
