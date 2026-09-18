@@ -8,6 +8,7 @@ if [ ! -f "$RUNTIME/artisan" ]; then
 fi
 cp "$ROOT/local-demo/routes/web.php" "$RUNTIME/routes/web.php"
 mkdir -p "$RUNTIME/app/Http/Controllers" "$RUNTIME/database/migrations" "$RUNTIME/database/seeders" "$RUNTIME/tests/Feature"
+cp "$ROOT/local-demo/public/demo.html" "$RUNTIME/public/demo.html"
 cp "$ROOT/local-demo/app/Http/Controllers/DemoCasinoController.php" "$RUNTIME/app/Http/Controllers/"
 cp "$ROOT/local-demo/database/migrations/2023_01_01_000001_create_demo_casino_tables.php" "$RUNTIME/database/migrations/"
 cp "$ROOT/local-demo/database/seeders/DatabaseSeeder.php" "$RUNTIME/database/seeders/"

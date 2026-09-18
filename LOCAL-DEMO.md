@@ -1,30 +1,17 @@
 # Local-only runtime
 
-This branch adds a Laravel 9-compatible, local-only demo adapter around the repository's session/catalog concepts. It does not contact or proxy external casino providers and uses fake balances only.
-
 Start everything:
 
 ```bash
 docker compose up --build
 ```
 
-URL: http://localhost:8000
+On the same Wi-Fi network, open this on your phone:
 
-Verify:
-
-```bash
-curl http://localhost:8000/health
-curl http://localhost:8000/
-curl -X POST http://localhost:8000/api/demo/sessions -H 'Content-Type: application/json' -d '{"game_id":"local-deterministic-slot","player_id":"trial-player","currency":"USD"}'
+```text
+http://YOUR-COMPUTER-LAN-IP:8000/play
 ```
 
-Use the returned token:
+For example: `http://192.168.1.25:8000/play`.
 
-```bash
-curl -X POST http://localhost:8000/api/demo/sessions/TOKEN/events -H 'Content-Type: application/json' -d '{"event":"init"}'
-curl -X POST http://localhost:8000/api/demo/sessions/TOKEN/events -H 'Content-Type: application/json' -d '{"event":"spin","bet":100}'
-```
-
-Run tests inside the app container/runtime with `cd .runtime && php artisan test`.
-
-The original `casino-dog` package remains in place for auditability. Its unavailable Nova support dependency and external-provider routes are intentionally not loaded by this local adapter.
+Tap **Open game**, then **Initialize** and **Spin**. The page uses a local deterministic game and fake funds only. Your computer firewall must allow TCP port 8000, and the phone must be on the same network.
