@@ -1,0 +1,5 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+return new class extends Migration { public function up(){ Schema::create('demo_games',function(Blueprint $t){$t->id();$t->string('slug')->unique();$t->string('name');$t->string('provider');$t->boolean('enabled')->default(true);$t->timestamps();}); Schema::create('demo_sessions',function(Blueprint $t){$t->id();$t->string('token')->unique();$t->string('game_id');$t->string('player_id');$t->string('currency',8);$t->unsignedBigInteger('balance');$t->string('state');$t->timestamps();}); Schema::create('demo_transactions',function(Blueprint $t){$t->id();$t->string('transaction_id')->unique();$t->string('session_token');$t->string('event');$t->unsignedBigInteger('bet');$t->unsignedBigInteger('win');$t->unsignedBigInteger('balance_after');$t->timestamps();}); } public function down(){Schema::dropIfExists('demo_transactions');Schema::dropIfExists('demo_sessions');Schema::dropIfExists('demo_games');} };

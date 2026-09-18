@@ -1,0 +1,9 @@
+{
+  "name": "Local Casino Demo",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [8000, 3306, 6379],
+  "postCreateCommand": "composer install --no-interaction",
+  "remoteUser": "root"
+}
